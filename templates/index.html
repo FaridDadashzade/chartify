@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Chartify</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=SF+Pro+Display:wght@400;500;600;700&display=swap">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="https://cdn-icons-png.flaticon.com/512/9280/9280598.png" type="image/x-icon">    
+</head>
+<body>
+
+<nav class="navbar">
+    <div class="navbar-content">
+        <div class="logo">
+            <span class="music-icon">🎵</span>
+            <span class="logo-text">Chartify</span>
+        </div>
+        <div class="country-select">
+            <form method="get" id="countryForm">
+                <select name="country" onchange="document.getElementById('countryForm').submit()">
+                    {% for code, name in countries.items() %}
+                        <option value="{{ code }}" {% if selected_country == code %}selected{% endif %}>
+                            {{ name }}
+                        </option>
+                    {% endfor %}
+                </select>
+            </form>
+        </div>
+    </div>
+    <div class="ios-tab-bar">
+        <div class="ios-tab active" data-tab="itunes" onclick="showTab('itunes')">iTunes</div>
+        {% if youtube %}
+        <div class="ios-tab" data-tab="youtube" onclick="showTab('youtube')">YouTube</div>
+        {% endif %}
+        <div class="ios-tab" data-tab="shazam" onclick="showTab('shazam')">Shazam</div>
+        {% if tiktok %}
+        <div class="ios-tab" data-tab="tiktok" onclick="showTab('tiktok')">TikTok</div>
+        {% endif %}
+        {% if spotify %}
+        <div class="ios-tab" data-tab="spotify" onclick="showTab('spotify')">Spotify</div>
+        {% endif %}
+    </div>
+</nav>
+
+<main>
+    <div class="chart-container ios-tab-content" id="itunes-tab">
+        <div class="chart-header">
+            <h2>iTunes Top ({{ countries[selected_country] }})</h2>
+        </div>
+        <ul class="chart-list">
+            {% for song in itunes %}
+            <li class="chart-item">
+                <div class="chart-position">{{ song.position }}</div>
+                <div class="chart-info">
+                    <div class="chart-title">{{ song.title }}</div>
+                    <div class="chart-artist">{{ song.artist }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% if youtube %}
+    <div class="chart-container ios-tab-content" id="youtube-tab" style="display:none">
+        <div class="chart-header">
+            <h2>YouTube Top ({{ countries[selected_country] }})</h2>
+        </div>
+        <ul class="chart-list">
+            {% for song in youtube %}
+            <li class="chart-item">
+                <div class="chart-position">{{ song.position }}</div>
+                <div class="chart-info">
+                    <div class="chart-title">{{ song.title }}</div>
+                    <div class="chart-artist">{{ song.artist }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    <div class="chart-container ios-tab-content" id="shazam-tab" style="display:none">
+        <div class="chart-header">
+            <h2>Shazam Top ({{ countries[selected_country] }})</h2>
+        </div>
+        <ul class="chart-list">
+            {% for song in shazam %}
+            <li class="chart-item">
+                <div class="chart-position">{{ song.position }}</div>
+                <div class="chart-info">
+                    <div class="chart-title">{{ song.title }}</div>
+                    <div class="chart-artist">{{ song.artist }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    {% if tiktok %}
+    <div class="chart-container ios-tab-content" id="tiktok-tab" style="display:none">
+        <div class="chart-header">
+            <h2>TikTok Top ({{ countries[selected_country] }})</h2>
+        </div>
+        <ul class="chart-list">
+            {% for song in tiktok %}
+            <li class="chart-item">
+                <div class="chart-position">{{ song.position }}</div>
+                <div class="chart-info">
+                    <div class="chart-title">{{ song.title }}</div>
+                    <div class="chart-artist">{{ song.artist }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+
+    {% if spotify %}
+    <div class="chart-container ios-tab-content" id="spotify-tab" style="display:none">
+        <div class="chart-header">
+            <h2>Spotify Top ({{ countries[selected_country] }})</h2>
+        </div>
+        <ul class="chart-list">
+            {% for song in spotify %}
+            <li class="chart-item">
+                <div class="chart-position">{{ song.position }}</div>
+                <div class="chart-info">
+                    <div class="chart-title">{{ song.title }}</div>
+                    <div class="chart-artist">{{ song.artist }}</div>
+                </div>
+            </li>
+            {% endfor %}
+        </ul>
+    </div>
+    {% endif %}
+</main>
+
+<footer>
+    <p>© 2025 Chartify. All rights reserved.</p>
+    <p>Made by <a href="https://github.com/FaridDadashzade" target="_blank" rel="noopener noreferrer" style="color: var(--system-blue); text-decoration: none;">FVREED</a></p>
+</footer>
+
+<script>
+    function showTab(tabName) {
+        const tabs = document.querySelectorAll('.ios-tab-content');
+        const tabLinks = document.querySelectorAll('.ios-tab');
+
+        tabs.forEach(tab => {
+            tab.style.display = 'none';
+        });
+
+        tabLinks.forEach(link => {
+            link.classList.remove('active');
+        });
+
+        const selectedTab = document.getElementById(tabName + '-tab');
+        if (selectedTab) {
+            selectedTab.style.display = 'block';
+        }
+
+        document.querySelector(`.ios-tab[data-tab="${tabName}"]`).classList.add('active');
+    }
+</script>
+
+</body>
+</html>
